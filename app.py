@@ -27,11 +27,18 @@ def home():
     if request.method == "POST":
         title = request.form['title']
         desc = request.form['desc']
+        
         todo = Todo(title=title, desc=desc)
         db.session.add(todo)
         db.session.commit()
+        
+        print("Redirecting to prevent duplicate submissions.")
+        return redirect("/")
+    
     all_todo = Todo.query.all()
     return render_template("index.html", allTodo=all_todo)
+
+
 
 # Route to delete a todo item
 @app.route("/delete/<int:sno>")
