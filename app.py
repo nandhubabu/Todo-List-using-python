@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request,redirect
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -11,6 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'todo
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# Model for the Todo table
 class Todo(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -20,8 +21,9 @@ class Todo(db.Model):
     def __repr__(self) -> str:
         return f"{self.sno} - {self.title}"
 
+# Route for the home page
 @app.route("/", methods=['GET', 'POST'])
-def hello_world():
+def home():
     if request.method == "POST":
         title = request.form['title']
         desc = request.form['desc']
@@ -29,42 +31,29 @@ def hello_world():
         db.session.add(todo)
         db.session.commit()
     all_todo = Todo.query.all()
-    # print(all_todo)
     return render_template("index.html", allTodo=all_todo)
 
-# @app.route("/update/<int:sno>", methods=['GET', 'POST'])
-# def update(sno):
-#     todo = Todo.query.get_or_404(sno)
-
-#     if request.method == 'POST':
-#         todo.title = request.form['title']
-#         todo.desc = request.form['desc']
-#         db.session.commit()
-#         return redirect('/')
-
-#     return render_template('update.html', todo=todo)
-
-
+# Route to delete a todo item
 @app.route("/delete/<int:sno>")
 def delete(sno):
-    todo = Todo.query.filter_by(sno =sno).first()
-    db.session.delete(todo)
-    db.session.commit()
-    return  redirect("/")
+    todo = Todo.query.filter_by(sno=sno).first()
+    if todo:
+        db.session.delete(todo)
+        db.session.commit()
+    return redirect("/")
 
+# Main entry point for the application
 if __name__ == "__main__":
+    # Create database tables if they don't exist
     with app.app_context():
         try:
             db.create_all()
-            print("Database tables created.")
+            print("Database tables created successfully.")
         except Exception as e:
             print(f"Error creating database tables: {e}")
 
-    # Check for the database file after the app context is closed
+    # Fetch the PORT environment variable for deployment
+    port = int(os.environ.get("PORT", 8000))
     
-    if os.path.exists("todo.db"):
-        print("todo.db file created successfully.")
-    else:
-        print("todo.db file not found.")
-
-    app.run(debug=True, port=8000)
+    # Run the app on 0.0.0.0 to bind to all network interfaces
+    app.run(debug=True, host="0.0.0.0", port=port)
