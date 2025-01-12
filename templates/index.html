@@ -71,11 +71,10 @@
             background-color: #007bff;
             color: white;
         }
-        .me{
-          text-decoration: none;
-          color: white;
+        .me {
+            text-decoration: none;
+            color: white;
         }
-        
     </style>
 </head>
 <body>
@@ -86,10 +85,11 @@
     </nav>
     <div class="container">
         <h1>TODO LIST</h1>
-        <form action="/" method="POST">
+        <!-- Form for adding a new to-do -->
+        <form method="POST" action="/">
             <div class="mb-3">
                 <label for="title" class="form-label">Todo Title</label>
-                <input type="text" class="form-control" name="title" id="title" placeholder="Enter your todo title" required>
+                <input type="text" class="form-control" name="title" id="title" placeholder="Enter the title" required>
             </div>
             <div class="mb-3">
                 <label for="desc" class="form-label">Todo Description</label>
@@ -97,6 +97,8 @@
             </div>
             <button type="submit" class="btn btn-primary w-100">Add Todo</button>
         </form>
+        
+        <!-- Display the To-Do List -->
         {% if allTodo|length == 0 %}
         <div class="no-record">
             <p>No records found. Add a new todo above!</p>
@@ -120,7 +122,7 @@
                     <td>{{ todo.desc }}</td>
                     <td>{{ todo.date_created }}</td>
                     <td>
-<!--                         <a href="/update/{{ todo.sno }}" class="btn btn-success btn-sm">Update</a> -->
+                        <!-- <a href="/update/{{ todo.sno }}" class="btn btn-success btn-sm">Update</a> -->
                         <a href="/delete/{{ todo.sno }}" class="btn btn-danger btn-sm">Delete</a>
                     </td>
                 </tr>
@@ -131,7 +133,7 @@
     </div>
     <div class="footer">
         <p>&copy; 2024 by <a class="me" href="https://nandhubabu.github.io/My-Portfolio/" target="_blank" rel="noopener noreferrer"><b>Me</b></a>
-          | All Rights Reserved</p></p>
+          | All Rights Reserved</p>
     </div>
 </body>
 </html>
